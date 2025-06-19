@@ -39,7 +39,11 @@ public class PricingCalculationService {
 
     private static final Logger logger = LoggerFactory.getLogger(PricingCalculationService.class);
 
-    public Object processFulfillmentAndCalculatePricing( List<OrderFulfillment> totalOrderFulfillmentList , boolean returnOverallPrice,String resellerID, boolean isIccidQuery,boolean isExcelRequest) {
+    public Object processFulfillmentAndCalculatePricing( List<OrderFulfillment> totalOrderFulfillmentList ,
+                                                         boolean returnOverallPrice,
+                                                         String resellerID,
+                                                         boolean isIccidQuery,
+                                                         boolean isExcelRequest) {
      logger.info("-----call came to calculate the rates ----------------");
      List<ESimUsageHistory> finalEsESimUsageHistoryList = new ArrayList<>();
         Set<String> iccidSet = new HashSet<>(totalOrderFulfillmentList.stream().map(OrderFulfillment::getIccid).collect(Collectors.toSet()));
@@ -54,7 +58,12 @@ public class PricingCalculationService {
      }
     return null;
     }
-    private Object findAllZetexaRatesByMccAndMnc(List<ESimUsageHistory> finalEsESimUsageHistoryList ,List<String> iccidList , boolean returnOverallPrice , String resellerID, boolean isIccidQuery,boolean isExcelRequest) {
+    private Object findAllZetexaRatesByMccAndMnc(List<ESimUsageHistory> finalEsESimUsageHistoryList ,
+                                                 List<String> iccidList ,
+                                                 boolean returnOverallPrice ,
+                                                 String resellerID,
+                                                 boolean isIccidQuery,
+                                                 boolean isExcelRequest) {
         logger.info("---------- Fetching Zetexa Rates by MCC+MNC from CSV data --------------"+"\n" +finalEsESimUsageHistoryList);
         Map<String, List<ESimUsageHistory>> groupedByIccid = groupByIccid(finalEsESimUsageHistoryList);
         List<UsageCostResponse> responseList = new ArrayList<>();
@@ -73,16 +82,24 @@ public class PricingCalculationService {
         if(isIccidQuery){
           return  buildIccidSummary(responseList,isExcelRequest,resellerID);
         }
-        return returnOverallPrice ? prepareTotalPriceForICCIDSForReseller(iccidList,responseList,resellerID,isExcelRequest) : prepareExcelReportForICCIDBase(responseList,isExcelRequest);
+        return returnOverallPrice ?
+                prepareTotalPriceForICCIDSForReseller(iccidList,responseList,resellerID,isExcelRequest)
+                : prepareExcelReportForICCIDBase(responseList,isExcelRequest);
     }
 
-    private Object prepareTotalPriceForICCIDSForReseller(List<String> iccidList, List<UsageCostResponse> responseList, String resellerID,boolean isExcelRequest) {
+    private Object prepareTotalPriceForICCIDSForReseller(List<String> iccidList,
+                                                         List<UsageCostResponse> responseList,
+                                                         String resellerID,
+                                                         boolean isExcelRequest) {
       double totalCost = responseList.stream().mapToDouble(UsageCostResponse::getTotalPrice).sum();
         Map<String,Object>  resellerResponseMap = new HashMap<>();
       resellerResponseMap.put("ICCID's",iccidList);
       resellerResponseMap.put("ResellerID",resellerID);
       resellerResponseMap.put("Total Cost",totalCost);
-      return isExcelRequest ? excelService.prepareTotalPriceExcelResponse(iccidList,responseList,resellerID) : resellerResponseMap;
+
+      return isExcelRequest ?
+              excelService.prepareTotalPriceExcelResponse(iccidList,responseList,resellerID)
+              : resellerResponseMap;
     }
 
     private Object prepareExcelReportForICCIDBase(List<UsageCostResponse> usageCostResponses,boolean isExcelRequest){
@@ -91,7 +108,8 @@ public class PricingCalculationService {
     }
 
     private Map<String, List<ESimUsageHistory>> groupByIccid(List<ESimUsageHistory> list) {
-        return list.stream().filter(e -> e.getIccid() != null && e.getMcc() != null && e.getMnc() != null)
+        return list.stream().
+                filter(e -> e.getIccid() != null && e.getMcc() != null && e.getMnc() != null)
                 .collect(Collectors.groupingBy(ESimUsageHistory::getIccid));
     }
 
@@ -154,7 +172,9 @@ public class PricingCalculationService {
             finalList.add(Collections.singletonMap(entry.getKey(), entry.getValue()));
         }
 
-        return  isExcelRequest ? excelService.exportIccidSummaryToExcelResponse(finalList,"Reseller_Summary_" + resellerID + ".xlsx") : finalList;
+        return  isExcelRequest ?
+                excelService.exportIccidSummaryToExcelResponse(finalList,"Reseller_Summary_" + resellerID + ".xlsx")
+                : finalList;
     }
 
 }
