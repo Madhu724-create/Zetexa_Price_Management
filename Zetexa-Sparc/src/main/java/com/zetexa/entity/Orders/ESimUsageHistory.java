@@ -51,6 +51,9 @@ public class ESimUsageHistory {
     @Column(name = "iccid")
     private String iccid;
 
+    @Column(name = "pre_package_id")
+    private String prepaidPackageID;
+
     @Column(name = "subs_phone_number")
     private String subsPhoneNumber;
 

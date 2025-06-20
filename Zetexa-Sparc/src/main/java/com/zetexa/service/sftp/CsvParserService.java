@@ -44,6 +44,7 @@ public class CsvParserService {
                 record.setSubscriberId(parseLong(csv.get("SUBSCRIBER_ID")));
                 record.setImsi(csv.get("IMSI"));
                 record.setIccid(csv.get("ICCID"));
+                record.setIccid(csv.get("PREPAID_PACKAGE_IDS"));
                 record.setSubsPhoneNumber(csv.get("SUBS_PHONE_NUMBER"));
                 record.setPrepaidPackageQtys(parseLong(csv.get("PREPAID_PACKAGE_QTYS")));
                 record.setCustoCharge(parseDouble(csv.get("CUSTO_CHARGE")));

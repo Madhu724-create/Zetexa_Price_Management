@@ -9,16 +9,23 @@ import lombok.Setter;
 public class UsageCostResponse {
     private String iccid;
     private String mccmnc;
-    private double totalPrice;
+    private double totalCost;
     private String countyName;
     private String operatorName;
+    private String parentResellerName = "Zetexa";
+    private String ResellerName ;
+    private String data;
+    private String packageID;
 
-    public UsageCostResponse(String iccid, String mccmnc, double totalPrice,String countyName,String operatorName) {
+    public UsageCostResponse(String iccid, String mccmnc, double totalCost, String countyName, String operatorName, String parentResellerName, String resellerName, String data, String packageID) {
         this.iccid = iccid;
         this.mccmnc = mccmnc;
-        this.totalPrice = totalPrice;
+        this.totalCost = totalCost;
         this.countyName = countyName;
         this.operatorName = operatorName;
+        this.parentResellerName = parentResellerName;
+        ResellerName = resellerName;
+        this.data = data;
+        this.packageID = packageID;
     }
-
 }

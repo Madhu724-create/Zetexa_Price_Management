@@ -3,10 +3,10 @@ package com.zetexa.controller.OrdersRestController;
 
 import com.zetexa.service.orders.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/order")
@@ -20,7 +20,13 @@ public class OrdersRestController {
     public Object fetchOrderHeaderListByResellerID(@RequestParam("resellerID") String resellerID ,
                                                    @RequestParam("returnOverallCost") boolean returnOverallPrice,
                                                    @RequestParam("isIccidQuery") boolean isIccidQuery,
-                                                   @RequestParam("isExcelRequest") boolean isExcelRequest){
-        return ordersService.fetchOrderHeaderListByResellerID(resellerID,returnOverallPrice,isIccidQuery,isExcelRequest);
+                                                   @RequestParam("isExcelRequest") boolean isExcelRequest,
+                                                   @RequestParam("isZetexaPriceRequest") boolean isZetexaPriceRequest,
+                                                   @RequestParam("fromDate") String fromDate,
+                                                   @RequestParam("toDate") String toDate){
+        Map<String,String> datesCriteria = new HashMap<>();
+        datesCriteria.put("fromDate",fromDate);
+        datesCriteria.put("toDate",toDate);
+        return ordersService.fetchOrderHeaderListByResellerID(resellerID,returnOverallPrice,isIccidQuery,isExcelRequest,isZetexaPriceRequest,datesCriteria);
     }
 }

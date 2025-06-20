@@ -22,7 +22,7 @@ public class ExcelService {
 
     public ResponseEntity<byte[]> prepareTotalPriceExcelResponse(List<String> iccidList, List<UsageCostResponse> responseList, String resellerID) {
         logger.info("------call came to prepare excel for Total Cost calculation for Reseller-------------" + resellerID);
-        double totalCost = responseList.stream().mapToDouble(UsageCostResponse::getTotalPrice).sum();
+        double totalCost = responseList.stream().mapToDouble(UsageCostResponse::getTotalCost).sum();
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Reseller Summary");
@@ -135,7 +135,11 @@ public class ExcelService {
             headerStyle.setFillForegroundColor(IndexedColors.BLACK.getIndex());
             headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-            String[] headers = {"ICCID", "MCCMNC", "Total Price", "Country Name", "Operator Name"};
+            String[] headers = {
+                    "ICCID", "MCCMNC", "Total Cost", "Country Name", "Operator Name",
+                    "Parent Reseller Name", "Reseller Name", "Data", "Package ID"
+            };
+
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.length; i++) {
                 Cell cell = headerRow.createCell(i);
@@ -148,9 +152,13 @@ public class ExcelService {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(response.getIccid());
                 row.createCell(1).setCellValue(response.getMccmnc());
-                row.createCell(2).setCellValue(response.getTotalPrice());
+                row.createCell(2).setCellValue(response.getTotalCost());
                 row.createCell(3).setCellValue(response.getCountyName());
                 row.createCell(4).setCellValue(response.getOperatorName());
+                row.createCell(5).setCellValue(response.getParentResellerName());
+                row.createCell(6).setCellValue(response.getResellerName());
+                row.createCell(7).setCellValue(response.getData());
+                row.createCell(8).setCellValue(response.getPackageID());
             }
 
             for (int i = 0; i < headers.length; i++) {
@@ -173,5 +181,6 @@ public class ExcelService {
             return ResponseEntity.internalServerError().build();
         }
     }
+
 
 }

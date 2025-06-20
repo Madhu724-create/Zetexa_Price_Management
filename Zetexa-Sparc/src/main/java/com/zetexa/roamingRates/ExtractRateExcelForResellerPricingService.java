@@ -1,7 +1,6 @@
 package com.zetexa.roamingRates;
 
 import com.zetexa.entity.Reseller.ResellerRoamingRates;
-import com.zetexa.entity.Reseller.ZetexaRoamingRates;
 import com.zetexa.repository.reseller.ResellerRoamingRatesRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -25,6 +24,7 @@ public class ExtractRateExcelForResellerPricingService {
     private static final Logger logger = LoggerFactory.getLogger(ExtractRateExcelForZetexaPricingService.class);
 
     public String importFromExcel(MultipartFile file) {
+        removeRecordsFromExistingRates();
         int records = 0;
         logger.info("------call came to extract the roaming rates and save in db-------------");
         try (InputStream inputStream = file.getInputStream();
@@ -60,6 +60,10 @@ public class ExtractRateExcelForResellerPricingService {
         return records+  "   inserted successfully!";
     }
 
+    private void removeRecordsFromExistingRates() {
+        logger.info("-------Started removing records from Reseller Roaming Rates---------");
+        resellerRoamingRatesRepository.deleteAll();
+    }
     private String getMCCMNCValue(Row row) {
         Cell cell = row.getCell(3);
         if (cell == null) return null;
